@@ -25,4 +25,31 @@ class Graph:
         return self.vertices[vertex_id]
 
 def earliest_ancestor(ancestors, starting_node):
-    pass
+    g = Graph()
+    q = Queue()
+
+    for (parent, child) in ancestors:
+        if parent not in g.vertices:
+            g.add_vertex(parent)
+        if child not in g.vertices:
+            g.add_vertex(child)
+
+        g.add_edge(child, parent)
+    
+    q.enqueue(starting_node)
+    earliest = -1
+    visited = set()
+
+    while q.size():
+        curr_node = q.dequeue()
+        if curr_node not in visited:
+            visited.add(curr_node)
+            parents = g.get_parents(starting_node)
+            for (i, parent) in enumerate(parents):
+                q.enqueue(parent)
+                if i == 0:
+                    earliest = parent
+                elif parent < earliest:
+                    earliest = parent 
+
+    return earliest
