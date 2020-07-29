@@ -36,20 +36,26 @@ def earliest_ancestor(ancestors, starting_node):
 
         g.add_edge(child, parent)
     
-    q.enqueue(starting_node)
+    q.enqueue([starting_node])
     earliest = -1
     visited = set()
+    highest_gen_length = 0
 
     while q.size():
-        curr_node = q.dequeue()
+        path = q.dequeue()
+        curr_node = path[-1]
         if curr_node not in visited:
             visited.add(curr_node)
-            parents = g.get_parents(starting_node)
-            for (i, parent) in enumerate(parents):
-                q.enqueue(parent)
-                if i == 0:
-                    earliest = parent
-                elif parent < earliest:
-                    earliest = parent 
+            parents = g.get_parents(curr_node)
+            for parent in parents:
+                if parent not in visited:
+                    parent_path = path + [parent]
+                    q.enqueue(parent_path)
+
+                    if (len(parent_path) > highest_gen_length):
+                        earliest = parent
+                        highest_gen_length = len(parent_path)
+                    elif (len(parent_path) == highest_gen_length) and (parent < earliest):
+                        earliest = parent
 
     return earliest
