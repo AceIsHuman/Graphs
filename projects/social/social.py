@@ -30,6 +30,9 @@ class SocialGraph:
         self.users[self.last_id] = User(name)
         self.friendships[self.last_id] = set()
 
+    def get_friends(self, user_id):
+        return self.friendships[user_id]
+
     def fisher_yates_shuffle(self, l):
         for i in range(0, len(l)):
             random_index = random.randint(i, len(l) - 1)
