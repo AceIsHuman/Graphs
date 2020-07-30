@@ -131,3 +131,10 @@ if __name__ == '__main__':
     print(sg.friendships)
     connections = sg.get_all_social_paths(1)
     print(connections)
+
+    total = 0
+    for path in connections.values():
+        total += len(path)
+
+    average = total / len(connections)
+    print("average degree of seperation: ", average)
