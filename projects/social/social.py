@@ -1,3 +1,5 @@
+import random
+
 class User:
     def __init__(self, name):
         self.name = name
@@ -47,11 +49,31 @@ class SocialGraph:
         self.last_id = 0
         self.users = {}
         self.friendships = {}
-        # !!!! IMPLEMENT ME
 
         # Add users
+        for user in range(num_users):
+            self.add_user(user)
+
+        # * Hint 1: To create N random friendships, 
+        # you could create a list with all possible friendship combinations of user ids, 
+
+        friendship_combinations = []
+        # O(n^2)
+        for user in range(1, self.last_id + 1):
+            for friend in range(user + 1, self.last_id + 1):
+                friendship_combinations.append((user, friend))
+
+        # shuffle the list
+        self.fisher_yates_shuffle(friendship_combinations)
+
+        # then grab the first N elements from the list. 
+        total_friendships = num_users * avg_friendships
+
+        friends_to_make = friendship_combinations[:(total_friendships // 2)]
 
         # Create friendships
+        for friendship in friends_to_make:
+            self.add_friendship(friendship[0], friendship[1])
 
     def get_all_social_paths(self, user_id):
         """
