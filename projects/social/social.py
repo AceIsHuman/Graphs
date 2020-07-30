@@ -105,6 +105,23 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+        q = Queue()
+        q.enqueue([user_id])
+        visited = {}
+
+        # traverse all friends
+        while q.size() > 0:
+            # keep track of current path
+            curr_path = q.dequeue()
+            curr_node = curr_path[-1]
+            if curr_node not in visited:
+                # add current friend to visited with shortest path as value
+                visited[curr_node] = curr_path
+                friends = self.get_friends(curr_node)
+                for friend in friends:
+                    friend_path = curr_path + [friend]
+                    q.enqueue(friend_path)
+
         return visited
 
 
