@@ -38,12 +38,19 @@ def reverse_direction(direction):
     else:
         return None
 
+def add_to_visited(room_in, next_room, direction, visited):
+    visited[room_in.id][direction] = next_room.id
+
+    if next_room.id not in visited:
+        visited[next_room.id] = {}
+
+    visited[next_room.id][reverse_direction(direction)] = room_in.id
+
 def generate_path(p):
     visited = {}
     path = []
     while len(visited) != len(room_graph):
         curr_room = p.current_room
-        print(curr_room)
         if curr_room.id not in visited:
             visited[curr_room.id] = {}
         exits = curr_room.get_exits()
