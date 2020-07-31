@@ -53,15 +53,20 @@ def generate_path(p):
         curr_room = p.current_room
         if curr_room.id not in visited:
             visited[curr_room.id] = {}
+
         exits = curr_room.get_exits()
         unvisited_exits = [e for e in exits if e not in visited[curr_room.id]]
-        next_room = random.choice(unvisited_exits)
-        path.append(next_room)
-        p.travel(next_room)
-        visited[curr_room.id][next_room] = p.current_room.id
-        if p.current_room.id not in visited:
-            visited[p.current_room.id] = {}
-        visited[p.current_room.id][reverse_direction(next_room)] = curr_room.id
+
+        if len(unvisited_exits) == 0:
+            pass    
+        else:
+            direction = random.choice(unvisited_exits)
+            p.travel(direction)
+            next_room = p.current_room
+
+            path.append(direction)
+            add_to_visited(curr_room, next_room, direction, visited)
+
     return path
 
 # traversal_path = ['n', 'n']
