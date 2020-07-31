@@ -64,6 +64,7 @@ def backtrack(path, player, visited):
 
 def generate_path(p):
     visited = {}
+    incompleted_rooms = {}
     path = []
 
     while len(visited) != len(room_graph):
@@ -76,6 +77,11 @@ def generate_path(p):
         if len(unvisited_exits) == 0:
             backtrack(path, p, visited)
         else:
+            if len(unvisited_exits) == 1 and curr_room.id in incompleted_rooms:
+                del incompleted_rooms[curr_room.id]
+            elif len(unvisited_exits) > 1:
+                incompleted_rooms[curr_room.id] = len(unvisited_exits)
+
             direction = random.choice(unvisited_exits)
             p.travel(direction)
             next_room = p.current_room
