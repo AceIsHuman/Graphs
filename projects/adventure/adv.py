@@ -50,6 +50,18 @@ def add_to_visited(room_in, next_room, direction, visited):
 
     visited[next_room.id][reverse_direction(direction)] = room_in.id
 
+def backtrack(path, player, visited):
+    path_copy = path.copy()
+    unvisited = get_unvisited(player.current_room, visited)
+
+    while len(unvisited) == 0:
+        direction = reverse_direction(path_copy.pop())
+
+        player.travel(direction)
+        path.append(direction)
+
+        unvisited = get_unvisited(player.current_room, visited)
+
 def generate_path(p):
     visited = {}
     path = []
