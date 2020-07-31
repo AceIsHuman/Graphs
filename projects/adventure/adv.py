@@ -65,16 +65,16 @@ def backtrack(path, player, visited):
 def generate_path(p):
     visited = {}
     path = []
+
     while len(visited) != len(room_graph):
         curr_room = p.current_room
         if curr_room.id not in visited:
             visited[curr_room.id] = {}
 
-        exits = curr_room.get_exits()
-        unvisited_exits = [e for e in exits if e not in visited[curr_room.id]]
+        unvisited_exits = get_unvisited(curr_room, visited)
 
         if len(unvisited_exits) == 0:
-            pass    
+            backtrack(path, p, visited)
         else:
             direction = random.choice(unvisited_exits)
             p.travel(direction)
