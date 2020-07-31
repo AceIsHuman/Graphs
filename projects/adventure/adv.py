@@ -26,6 +26,37 @@ world.print_rooms()
 player = Player(world.starting_room)
 
 # Fill this out with directions to walk
+def reverse_direction(direction):
+    if direction == "n":
+        return "s"
+    elif direction == "s":
+        return "n"
+    elif direction == "e":
+        return "w"
+    elif direction == "w":
+        return "e"
+    else:
+        return None
+
+def generate_path(p):
+    visited = {}
+    path = []
+    while len(visited) != len(room_graph):
+        curr_room = p.current_room
+        print(curr_room)
+        if curr_room.id not in visited:
+            visited[curr_room.id] = {}
+        exits = curr_room.get_exits()
+        unvisited_exits = [e for e in exits if e not in visited[curr_room.id]]
+        next_room = random.choice(unvisited_exits)
+        path.append(next_room)
+        p.travel(next_room)
+        visited[curr_room.id][next_room] = p.current_room.id
+        if p.current_room.id not in visited:
+            visited[p.current_room.id] = {}
+        visited[p.current_room.id][reverse_direction(next_room)] = curr_room.id
+    return path
+
 # traversal_path = ['n', 'n']
 traversal_path = []
 
