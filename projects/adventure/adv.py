@@ -50,7 +50,7 @@ def add_to_visited(room_in, next_room, direction, visited):
 
     visited[next_room.id][reverse_direction(direction)] = room_in.id
 
-def backtrack(path, player, visited):
+def backtrack(path, player, visited, incompleted_rooms):
     path_copy = path.copy()
     unvisited = get_unvisited(player.current_room, visited)
 
@@ -75,9 +75,11 @@ def generate_path(p):
         unvisited_exits = get_unvisited(curr_room, visited)
 
         if len(unvisited_exits) == 0:
-            backtrack(path, p, visited)
+            backtrack(path, p, visited, incompleted_rooms)
+            if curr_room.id in incompleted_rooms:
+                del incompleted_rooms[curr_room.id]
         else:
-            if len(unvisited_exits) == 1 and curr_room.id in incompleted_rooms:
+            if (len(unvisited_exits) == 1) and (curr_room.id in incompleted_rooms):
                 del incompleted_rooms[curr_room.id]
             elif len(unvisited_exits) > 1:
                 incompleted_rooms[curr_room.id] = len(unvisited_exits)
