@@ -1,3 +1,21 @@
+import random
+
+class Queue:
+    def __init__(self):
+        self.queue = []
+
+    def enqueue(self, value):
+        self.queue.append(value)
+
+    def dequeue(self):
+        if self.size():
+            return self.queue.pop(0)
+        else:
+            return None
+
+    def size(self):
+        return len(self.queue)
+
 class User:
     def __init__(self, name):
         self.name = name
@@ -28,6 +46,14 @@ class SocialGraph:
         self.users[self.last_id] = User(name)
         self.friendships[self.last_id] = set()
 
+    def get_friends(self, user_id):
+        return self.friendships[user_id]
+
+    def fisher_yates_shuffle(self, l):
+        for i in range(0, len(l)):
+            random_index = random.randint(i, len(l) - 1)
+            l[random_index], l[i] = l[i], l[random_index]
+
     def populate_graph(self, num_users, avg_friendships):
         """
         Takes a number of users and an average number of friendships
@@ -42,11 +68,31 @@ class SocialGraph:
         self.last_id = 0
         self.users = {}
         self.friendships = {}
-        # !!!! IMPLEMENT ME
 
         # Add users
+        for user in range(num_users):
+            self.add_user(user)
+
+        # * Hint 1: To create N random friendships, 
+        # you could create a list with all possible friendship combinations of user ids, 
+
+        friendship_combinations = []
+        # O(n^2)
+        for user in range(1, self.last_id + 1):
+            for friend in range(user + 1, self.last_id + 1):
+                friendship_combinations.append((user, friend))
+
+        # shuffle the list
+        self.fisher_yates_shuffle(friendship_combinations)
+
+        # then grab the first N elements from the list. 
+        total_friendships = num_users * avg_friendships
+
+        friends_to_make = friendship_combinations[:(total_friendships // 2)]
 
         # Create friendships
+        for friendship in friends_to_make:
+            self.add_friendship(friendship[0], friendship[1])
 
     def get_all_social_paths(self, user_id):
         """
@@ -59,6 +105,23 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+        q = Queue()
+        q.enqueue([user_id])
+        visited = {}
+
+        # traverse all friends
+        while q.size() > 0:
+            # keep track of current path
+            curr_path = q.dequeue()
+            curr_node = curr_path[-1]
+            if curr_node not in visited:
+                # add current friend to visited with shortest path as value
+                visited[curr_node] = curr_path
+                friends = self.get_friends(curr_node)
+                for friend in friends:
+                    friend_path = curr_path + [friend]
+                    q.enqueue(friend_path)
+
         return visited
 
 
@@ -68,3 +131,10 @@ if __name__ == '__main__':
     print(sg.friendships)
     connections = sg.get_all_social_paths(1)
     print(connections)
+
+    total = 0
+    for path in connections.values():
+        total += len(path)
+
+    average = total / len(connections)
+    print("average degree of seperation: ", average)
